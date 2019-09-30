@@ -9,11 +9,10 @@ import android.location.Location;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.MotionEvent;
 
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactContext;
@@ -23,14 +22,9 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
+import com.mapbox.android.gestures.MoveGestureDetector;
 import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.FeatureCollection;
-import com.mapbox.mapboxsdk.annotations.Marker;
-import com.mapbox.mapboxsdk.maps.Style;
-import com.mapbox.mapboxsdk.plugins.annotation.Symbol;
-import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager;
-import com.mapbox.mapboxsdk.plugins.annotation.OnSymbolDragListener;
-import com.mapbox.mapboxsdk.plugins.annotation.OnSymbolClickListener;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdate;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -39,12 +33,25 @@ import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.MapboxMapOptions;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
+import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.maps.UiSettings;
+import com.mapbox.mapboxsdk.plugins.annotation.OnSymbolClickListener;
+import com.mapbox.mapboxsdk.plugins.annotation.OnSymbolDragListener;
+import com.mapbox.mapboxsdk.plugins.annotation.Symbol;
+import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager;
 import com.mapbox.mapboxsdk.style.expressions.Expression;
+import com.mapbox.mapboxsdk.style.layers.CircleLayer;
+import com.mapbox.mapboxsdk.style.layers.FillExtrusionLayer;
+import com.mapbox.mapboxsdk.style.layers.FillLayer;
+import com.mapbox.mapboxsdk.style.layers.HeatmapLayer;
+import com.mapbox.mapboxsdk.style.layers.HillshadeLayer;
 import com.mapbox.mapboxsdk.style.layers.Layer;
-import com.mapbox.android.gestures.MoveGestureDetector;
+import com.mapbox.mapboxsdk.style.layers.LineLayer;
+import com.mapbox.mapboxsdk.style.layers.Property;
+import com.mapbox.mapboxsdk.style.layers.RasterLayer;
+import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
+import com.mapbox.rctmgl.R;
 import com.mapbox.rctmgl.components.AbstractMapFeature;
-import com.mapbox.rctmgl.components.annotation.RCTMGLCallout;
 import com.mapbox.rctmgl.components.annotation.RCTMGLPointAnnotation;
 import com.mapbox.rctmgl.components.camera.RCTMGLCamera;
 import com.mapbox.rctmgl.components.mapview.helpers.CameraChangeTracker;
@@ -59,7 +66,6 @@ import com.mapbox.rctmgl.events.constants.EventTypes;
 import com.mapbox.rctmgl.utils.BitmapUtils;
 import com.mapbox.rctmgl.utils.GeoJSONUtils;
 import com.mapbox.rctmgl.utils.GeoViewport;
-import com.mapbox.rctmgl.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,6 +75,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nullable;
+
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.visibility;
 
 /**
  * Created by nickitaliano on 8/18/17.
@@ -889,6 +897,56 @@ public class RCTMGLMapView extends MapView implements OnMapReadyCallback, Mapbox
     public void showAttribution() {
         View attributionView = findViewById(com.mapbox.mapboxsdk.R.id.attributionView);
         attributionView.callOnClick();
+    }
+
+    public void setSourceVisibility(final boolean visible, @NonNull final String sourceId, @Nullable final String sourceLayerId) {
+        if (mMap == null) {
+            return;
+        }
+        mMap.getStyle(new Style.OnStyleLoaded() {
+            @Override
+            public void onStyleLoaded(@NonNull Style style) {
+                List<Layer> layers = style.getLayers();
+                for (Layer layer : layers) {
+                    String source = "";
+                    String sourceLayer = null;
+                    if (layer instanceof CircleLayer) {
+                        CircleLayer symbolLayer = (CircleLayer) layer;
+                        source = symbolLayer.getSourceId();
+                        sourceLayer = symbolLayer.getSourceLayer();
+                    } else if (layer instanceof FillExtrusionLayer) {
+                        FillExtrusionLayer fillExtrusionLayer = (FillExtrusionLayer)layer;
+                        source = fillExtrusionLayer.getSourceId();
+                        sourceLayer = fillExtrusionLayer.getSourceLayer();
+                    } else if (layer instanceof FillLayer) {
+                        FillLayer fillLayer = (FillLayer)layer;
+                        source = fillLayer.getSourceId();
+                        sourceLayer = fillLayer.getSourceLayer();
+                    } else if (layer instanceof HeatmapLayer) {
+                        HeatmapLayer heatmapLayer = (HeatmapLayer)layer;
+                        source = heatmapLayer.getSourceId();
+                        sourceLayer = heatmapLayer.getSourceLayer();
+                    } else if (layer instanceof HillshadeLayer) {
+                        HillshadeLayer hillshadeLayer = (HillshadeLayer)layer;
+                        source = hillshadeLayer.getSourceId();
+                    } else if (layer instanceof LineLayer) {
+                        LineLayer lineLayer = (LineLayer)layer;
+                        source = lineLayer.getSourceId();
+                        sourceLayer = lineLayer.getSourceLayer();
+                    } else if (layer instanceof RasterLayer) {
+                        RasterLayer rasterLayer = (RasterLayer) layer;
+                        source = rasterLayer.getSourceId();
+                    } else if (layer instanceof SymbolLayer) {
+                        SymbolLayer symbolLayer = (SymbolLayer)layer;
+                        source = symbolLayer.getSourceId();
+                        sourceLayer = symbolLayer.getSourceLayer();
+                    }
+                    if (source.equals(sourceId) && (sourceLayerId == null || sourceLayerId.equals(sourceLayer))) {
+                        layer.setProperties(visibility(visible ? Property.VISIBLE : Property.NONE));
+                    }
+                }
+            }
+        });
     }
 
     public void init() {

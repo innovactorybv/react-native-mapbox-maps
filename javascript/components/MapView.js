@@ -494,6 +494,23 @@ class MapView extends NativeBridgeComponent(React.Component) {
   }
 
   /**
+   * Sets the visibility of all the layers referencing the specified `sourceLayerId` and/or `sourceId`
+   *
+   * @example
+   * await this._map.setSourceVisibility('composite', 'building')
+   *
+   * @param {String} sourceId - Identifier of the source
+   * @param {String} sourceLayerId - Identifier of the layer within the source identified by the `sourceId`
+   */
+  setSourceVisibility(visible, sourceId, sourceLayerId = undefined) {
+    this._runNativeCommand('setSourceVisibility', this._nativeRef, [
+      visible,
+      sourceId,
+      sourceLayerId,
+    ]);
+  }
+
+  /**
    * Show the attribution and telemetry action sheet.
    * If you implement a custom attribution button, you should add this action to the button.
    */
