@@ -23,6 +23,7 @@
 @end
 
 typedef void (^FoundLayerBlock) (MGLStyleLayer* layer);
+typedef void (^StyleLoadedBlock) (MGLStyle* style);
 
 @interface RCTMGLMapView : MGLMapView<RCTInvalidating>
 
@@ -35,6 +36,7 @@ typedef void (^FoundLayerBlock) (MGLStyleLayer* layer);
 @property (nonatomic, copy) NSArray<NSNumber *> *reactContentInset;
 
 @property (nonatomic, strong) NSMutableDictionary<NSString*, NSMutableArray<FoundLayerBlock>*> *layerWaiters;
+@property (nonatomic, strong) NSMutableArray<StyleLoadedBlock> *styleWaiters;
 
 @property (nonatomic, assign) BOOL reactLocalizeLabels;
 @property (nonatomic, assign) BOOL reactScrollEnabled;
@@ -73,5 +75,9 @@ typedef void (^FoundLayerBlock) (MGLStyleLayer* layer);
 - (void)didChangeUserTrackingMode:(MGLUserTrackingMode)mode animated:(BOOL)animated;
 
 - (void)waitForLayerWithID:(nonnull NSString*)layerID then:(void (^)(MGLStyleLayer* layer))foundLayer;
+
+- (void)setSourceVisibility:(BOOL)visiblity sourceId:(nonnull NSString*)sourceId sourceLayerId:(nullable NSString*)sourceLayerId;
+
+- (void)notifyStyleLoaded;
 
 @end

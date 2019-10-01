@@ -39,6 +39,7 @@ import GetZoom from '../examples/GetZoom';
 import GetCenter from '../examples/GetCenter';
 import UserLocationChange from '../examples/UserLocationChange';
 import Heatmap from '../examples/Heatmap';
+import SourceLayerVisibility from '../examples/SourceLayerVisibility';
 
 const styles = StyleSheet.create({
   header: {
@@ -112,6 +113,7 @@ const Examples = [
   new ExampleItem('Get Center', GetCenter),
   new ExampleItem('User Location Updates', UserLocationChange),
   new ExampleItem('Heatmap', Heatmap),
+  new ExampleItem('Source Layer Visiblity', SourceLayerVisibility),
 ];
 
 class Home extends React.Component {

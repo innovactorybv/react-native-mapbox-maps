@@ -39,7 +39,8 @@ declare namespace MapboxGL {
         takeSnap(writeToDisk?: boolean): Promise<string>;
         getZoom(): Promise<number>;
         getCenter(): Promise<Array<number>>;
-        showAttribution(): void
+        showAttribution(): void;
+        setSourceVisibility(visible: Boolean, sourceId: string, sourceLayerId?: string): void;
     }
 
     class Camera extends Component<CameraProps> {
