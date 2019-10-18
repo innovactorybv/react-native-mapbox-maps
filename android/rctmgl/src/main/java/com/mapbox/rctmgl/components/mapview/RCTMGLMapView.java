@@ -55,6 +55,8 @@ import com.mapbox.rctmgl.components.AbstractMapFeature;
 import com.mapbox.rctmgl.components.annotation.RCTMGLPointAnnotation;
 import com.mapbox.rctmgl.components.camera.RCTMGLCamera;
 import com.mapbox.rctmgl.components.mapview.helpers.CameraChangeTracker;
+import com.mapbox.rctmgl.components.styles.layers.RCTLayer;
+import com.mapbox.rctmgl.components.styles.layers.RCTMGLSymbolLayer;
 import com.mapbox.rctmgl.components.styles.light.RCTMGLLight;
 import com.mapbox.rctmgl.components.styles.sources.RCTMGLShapeSource;
 import com.mapbox.rctmgl.components.styles.sources.RCTSource;
@@ -206,6 +208,8 @@ public class RCTMGLMapView extends MapView implements OnMapReadyCallback, Mapbox
             RCTMGLCamera camera = (RCTMGLCamera) childView;
             mCamera = camera;
             feature = (AbstractMapFeature) childView;
+        } else if (childView instanceof RCTLayer) {
+            feature = (RCTLayer) childView;
         } else if (childView instanceof ViewGroup) {
             ViewGroup children = (ViewGroup) childView;
 
@@ -1014,7 +1018,7 @@ public class RCTMGLMapView extends MapView implements OnMapReadyCallback, Mapbox
             uiSettings.setCompassEnabled(mCompassEnabled);
         }
 
-        if (mCompassEnabled != null && uiSettings.isCompassEnabled()) {
+        if (mCompassViewMargins != null && uiSettings.isCompassEnabled()) {
             int pixelDensity = (int)getResources().getDisplayMetrics().density;
 
             int xMargin = mCompassViewMargins.getInt("x") * pixelDensity;

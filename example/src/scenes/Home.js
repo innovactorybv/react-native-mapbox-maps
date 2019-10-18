@@ -39,6 +39,9 @@ import GetZoom from '../examples/GetZoom';
 import GetCenter from '../examples/GetCenter';
 import UserLocationChange from '../examples/UserLocationChange';
 import Heatmap from '../examples/Heatmap';
+import RestrictMapBounds from '../examples/RestrictMapBounds';
+import ShowAndHideLayer from '../examples/ShowAndHideLayer';
+import ChangeLayerColor from '../examples/ChangeLayerColor';
 import SourceLayerVisibility from '../examples/SourceLayerVisibility';
 
 const styles = StyleSheet.create({
@@ -83,6 +86,7 @@ const Examples = [
   new ExampleItem('Show Click', ShowClick),
   new ExampleItem('Fly To', FlyTo),
   new ExampleItem('Fit Bounds', FitBounds),
+  new ExampleItem('Restrict Bounds', RestrictMapBounds),
   new ExampleItem('Set User Tracking Modes', SetUserTrackingModes),
   new ExampleItem(
     'Set User Location Vertical Alignment',
@@ -113,6 +117,8 @@ const Examples = [
   new ExampleItem('Get Center', GetCenter),
   new ExampleItem('User Location Updates', UserLocationChange),
   new ExampleItem('Heatmap', Heatmap),
+  new ExampleItem('Show and hide a layer', ShowAndHideLayer),
+  new ExampleItem('Change Layer Color', ChangeLayerColor),
   new ExampleItem('Source Layer Visiblity', SourceLayerVisibility),
 ];
 

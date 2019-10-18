@@ -31,6 +31,7 @@ typedef void (^StyleLoadedBlock) (MGLStyle* style);
 @property (nonatomic, weak) id<RCTMGLMapViewCamera> reactCamera;
 @property (nonatomic, strong) NSMutableArray<id<RCTComponent>> *reactSubviews;
 @property (nonatomic, strong) NSMutableArray<RCTMGLSource*> *sources;
+@property (nonatomic, strong) NSMutableArray<RCTMGLLayer*> *layers;
 @property (nonatomic, strong) NSMutableArray<RCTMGLPointAnnotation*> *pointAnnotations;
 @property (nonatomic, strong) RCTMGLLight *light;
 @property (nonatomic, copy) NSArray<NSNumber *> *reactContentInset;
@@ -53,6 +54,8 @@ typedef void (^StyleLoadedBlock) (MGLStyle* style);
 
 @property (nonatomic, copy) NSString *reactStyleURL;
 @property (nonatomic, assign) NSInteger *reactPreferredFramesPerSecond;
+
+@property (nonatomic, assign) MGLCoordinateBounds maxBounds;
 
 @property (nonatomic, assign) BOOL isUserInteraction;
 
