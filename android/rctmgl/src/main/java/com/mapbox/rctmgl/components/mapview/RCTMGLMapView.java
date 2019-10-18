@@ -9,6 +9,7 @@ import android.location.Location;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.util.DisplayMetrics;
+import android.util.Pair;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -107,7 +108,7 @@ public class RCTMGLMapView extends MapView implements OnMapReadyCallback, Mapbox
     private Map<String, RCTSource> mSources;
 
     private CameraChangeTracker mCameraChangeTracker = new CameraChangeTracker();
-    private Map<Integer, ReadableArray> mPreRenderMethodMap = new HashMap<>();
+    private List<Pair<Integer, ReadableArray>> mPreRenderMethods = new ArrayList<>();
 
     private MapboxMap mMap;
 
@@ -188,7 +189,7 @@ public class RCTMGLMapView extends MapView implements OnMapReadyCallback, Mapbox
     }
 
     public void enqueuePreRenderMapMethod(Integer methodID, @Nullable ReadableArray args) {
-        mPreRenderMethodMap.put(methodID, args);
+        mPreRenderMethods.add(new Pair<>(methodID, args));
     }
 
     public void addFeature(View childView, int childPosition) {
@@ -663,12 +664,12 @@ public class RCTMGLMapView extends MapView implements OnMapReadyCallback, Mapbox
     @Override
     public void onDidFinishRenderingMap(boolean fully) {
         if (fully) {
-            if (mPreRenderMethodMap.size() > 0) {
-                for (Integer methodID : mPreRenderMethodMap.keySet()) {
-                    mManager.receiveCommand(this, methodID, mPreRenderMethodMap.get(methodID));
-                }
-                mPreRenderMethodMap.clear();
+            for (Pair<Integer, ReadableArray> preRenderMethod : mPreRenderMethods) {
+                Integer methodID = preRenderMethod.first;
+                ReadableArray args = preRenderMethod.second;
+                mManager.receiveCommand(this, methodID, args);
             }
+            mPreRenderMethods.clear();
             handleMapChangedEvent(EventTypes.DID_FINISH_RENDERING_MAP_FULLY);
         } else {
             handleMapChangedEvent(EventTypes.DID_FINISH_RENDERING_MAP);
