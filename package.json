@@ -1,7 +1,7 @@
 {
   "name": "@react-native-mapbox-gl/maps",
   "description": "A Mapbox GL react native module for creating custom maps",
-  "version": "7.0.7",
+  "version": "7.0.8",
   "publishConfig": {
     "access": "public"
   },
@@ -20,7 +20,7 @@
     "url": "https://github.com/react-native-mapbox-gl/maps"
   },
   "scripts": {
-    "fetch:ios:sdk": "node ./scripts/download-mapbox-gl-native-ios-if-on-mac.js 5.3.2",
+    "fetch:ios:sdk": "node ./scripts/download-mapbox-gl-native-ios-if-on-mac.js 5.5.0",
     "fetch:style:spec": ". ./scripts/download-style-spec.sh",
     "generate": "node ./scripts/autogenerate",
     "preinstall": "npm run fetch:ios:sdk",
@@ -36,10 +36,10 @@
     "react-native": ">=0.57.6"
   },
   "dependencies": {
-    "@turf/helpers": ">= 4.6.0 <7.0.0",
-    "@turf/distance": ">= 4.0.0 <7.0.0",
-    "@turf/along": ">= 4.0.0 <7.0.0",
     "@mapbox/geo-viewport": ">= 0.4.0",
+    "@turf/along": ">= 4.0.0 <7.0.0",
+    "@turf/distance": ">= 4.0.0 <7.0.0",
+    "@turf/helpers": ">= 4.6.0 <7.0.0",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
@@ -77,6 +77,7 @@
     "react": "16.8.6",
     "react-docgen": "^5.0.0-beta.1",
     "react-native": "0.59.10",
+    "react-native-testing-library": "^1.11.1",
     "react-test-renderer": "16.8.3"
   },
   "jest": {
